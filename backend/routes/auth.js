@@ -2,40 +2,14 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
+const User = require('../models/Users')
 
-const User = require('../models/Users');
 
-/**Ac
- * @swagger
- *
- * components:
- *   schemas:
- *    User:
- *      type: object
- *      required:
- *        - email
- *        - password
- *        - admin
- *
- *      properties:
- *        email:
- *            type : string
- *            description : email to log and signup a user
- *
- *        password:
- *            type : string
- *            description : need password for user authentication
- *
- *        admin:
- *            type: boolean
- *            description : flag to see user is admin or normal user
- *        example :
- *          email : "ajay@gmail.com"
- *          password : 1898192jdjshdjhjsdsd
- *          admin : true
- */
 
 router.use(cors());
+
+
+
 
 //signup
 router.post('/signup', async (req, res) => {
@@ -54,6 +28,9 @@ router.post('/signup', async (req, res) => {
     console.log(newUser);
 
     const user = await newUser.save();
+
+
+  
 
     res.status(200).json(user);
   } catch (error) {
