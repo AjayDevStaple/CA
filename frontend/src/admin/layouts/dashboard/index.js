@@ -16,6 +16,9 @@ import { useLocation,useNavigate   } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MDButton from 'components/MDButton';
 function Dashboard() {
+
+
+console.log('----------user-dashboard-------------')
   const dispatch = useDispatch()
   const location = useLocation()
   const navigate  = useNavigate ();
@@ -90,7 +93,7 @@ function Dashboard() {
           </Grid>
           
           <div>HEllo ADmin</div>
-          <MDButton>Upload Document</MDButton>
+          <MDButton>Upload   Docume   nt</MDButton>
        
         </Grid>
       </MDBox>

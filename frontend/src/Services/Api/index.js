@@ -16,6 +16,14 @@ const upload_document = async (data) => {
     return await axiosApiInstance.post(`${url}api/admin/doc`, data)
 }
 
+const create_User =  async(data) => {
+    return await axiosApiInstance.post(`${url}api/auth/signup` , data)
+}
+
+const delete_User =  async(data) => {
+    return await axiosApiInstance.delete(`${url}api/admin/user/${data}` , data)
+}
+
 // const posts = async (data) => {
 //     return await axiosApiInstance.get(`${url}products`, data)
 // }
@@ -35,6 +43,8 @@ export const _services = {
     user_login,
     get_user_list,
     upload_document,
+    create_User,
+    delete_User
     // posts,
     // postDetail,
     // product_categories,
