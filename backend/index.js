@@ -13,8 +13,13 @@ const userRoute = require('./routes/users');
 const authRoute = require('./routes/auth');
 const adminRoute = require('./routes/admin');
 const swaggerJSDoc = require('swagger-jsdoc');
+const showBanner = require('node-banner');
 
 dotenv.config();
+
+
+
+
 
 mongoose.connect(
   process.env.MONGO_URL,
@@ -55,8 +60,14 @@ app.use('/api/admin', adminRoute);
 
 const specs = swaggerJsDoc(options);
 
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
+ 
+(async () => {
+  await showBanner('CA-BACKEND', 'A Product of Staple Logic');
+})();
+
 
 app.listen(process.env.PORT, () => {
-  console.log('Server is running');
+  console.log('');
 });
+
+
