@@ -70,7 +70,7 @@ function Dashboard() {
           setUserList(res.data);
           setdilogOpen(true);
         })
-        .catch((err) => {});
+        .catch((err) => { });
     } else {
       setCreateOpen(true);
     }
@@ -240,7 +240,7 @@ function Dashboard() {
                 <Form.Select
                   aria-label="Default select example"
                   className="mt-3"
-                
+
                   onChange={(e) => {
                     setDocData({ ...docData, documentType: e.target.value });
                   }}
@@ -251,7 +251,7 @@ function Dashboard() {
                   <option value="3">Adhar Card</option>
                   <option value="4">GST invoice</option>
                 </Form.Select>
-                <textarea className="mt-3" style={{width: '465px'}}
+                <textarea className="mt-3" style={{ width: '465px' }}
                   type="text"
                   placeholder="document description"
                   onChange={(e) => {
@@ -402,7 +402,7 @@ function Dashboard() {
                 <Button variant="secondary" onClick={() => closeDocList()}>
                   Close
                 </Button>
-               
+
               </Modal.Footer>
             </Modal>
           )}
@@ -424,41 +424,60 @@ function Dashboard() {
             </tr>
             </thead>
           </Table> */}
-           <Table striped bordered hover size="sm">
-      <thead>
-        <tr>
-        <th>Name</th>
-              <th>Document No.</th>
-              <th>Email</th>
-              <th>Delete</th>
-              <th>Update</th>
-              <th>View Documents</th>
-        </tr>
-      </thead>
-     
-    </Table>
+          <Table striped bordered hover size="sm">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Document No.</th>
+                <th>Email</th>
+                <th>Delete</th>
+                <th>Update</th>
+                <th>View Documents</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData.length > 0 &&
+                tableData?.map((item) => (
+                  <tr>
+                    <td>{item.name}</td>
+                    <td>{item.documentNo}</td>
+                    <td>{item.email}</td>
+                    <td>
+                      <button onClick={() => handleDelete(item._id)}>delete</button>
+                    </td>
+                    <td>
+                      <button onClick={() => handleUpdate(item._id)}>update user</button>
+                    </td>
+                    <td>
+                      <button onClick={() => handleDocumentView(item._id)}>View</button>
+                    </td>
+                  </tr>))
+              }
+            </tbody>
 
-          {tableData.length > 0 &&
+          </Table>
+
+          {/* {tableData.length > 0 &&
             tableData?.map((item) => (
               <Table striped bordered hover>
                 <tbody>
-                <tr>
-                  <td>{item.name}</td>
-                  <td>{item.documentNo}</td>
-                  <td>{item.email}</td>
-                  <td>
-                    <button onClick={() => handleDelete(item._id)}>delete</button>
-                  </td>
-                  <td>
-                    <button onClick={() => handleUpdate(item._id)}>update user</button>
-                  </td>
-                  <td>
-                    <button onClick={() => handleDocumentView(item._id)}>View</button>
-                  </td>
-                </tr>
+                  <tr>
+                    <td>{item.name}</td>
+                    <td>{item.documentNo}</td>
+                    <td>{item.email}</td>
+                    <td>
+                      <button onClick={() => handleDelete(item._id)}>delete</button>
+                    </td>
+                    <td>
+                      <button onClick={() => handleUpdate(item._id)}>update user</button>
+                    </td>
+                    <td>
+                      <button onClick={() => handleDocumentView(item._id)}>View</button>
+                    </td>
+                  </tr>
                 </tbody>
               </Table>
-            ))}
+            ))} */}
         </MDBox>
       </Grid>
       <Footer />
