@@ -39,6 +39,11 @@ const delete_document = async (id) => {
 }
 
 
+const total_doc = async () => {
+    return await axiosApiInstance.get(`${url}api/admin/totaldoc`)
+}
+
+
 // const posts = async (data) => {
 //     return await axiosApiInstance.get(`${url}products`, data)
 // }
@@ -63,6 +68,7 @@ export const _services = {
     update_User,
     list_docs,
     delete_document,
+    total_doc
 
     // posts,
     // postDetail,

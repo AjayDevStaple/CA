@@ -43,6 +43,7 @@ function AdminDashboard() {
     uploadFile: "",
     userID: "",
   });
+  const [docCount , setDocCount] = useState();
   const [newUserData, setNewUserData] = useState({
     name: "",
     email: "",
@@ -59,6 +60,11 @@ function AdminDashboard() {
     _services.get_user_list().then((res) => {
       setTableData(res.data);
     });
+
+    _services.total_doc().then((res) => {
+      setDocCount(res.data)
+      console.log(docCount)
+    })
   }
 
   function handleClick(flag) {
@@ -166,7 +172,7 @@ function AdminDashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Bookings"
+                title="Total Document"
                 count={281}
                 percentage={{
                   color: "success",
@@ -180,8 +186,8 @@ function AdminDashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                title="Total Users"
+                count= {tableData.length}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -195,7 +201,7 @@ function AdminDashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Revenue"
+                title="Subscription Revenue"
                 count="34k"
                 percentage={{
                   color: "success",
