@@ -4,6 +4,11 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const User = require('../models/Users')
 
+const nodemailer = require('nodemailer');
+
+
+
+
 
 
 router.use(cors());
@@ -30,7 +35,44 @@ router.post('/signup', async (req, res) => {
     const user = await newUser.save();
 
 
-  
+    console.log(req.body.email)
+
+
+    const email =  req.body.email;
+    const password = req.body.password;
+
+
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'chandigarh.ca.1233@gmail.com',
+        pass: 'hjimftiojvskkjdr'
+      }
+    });
+    
+    var mailOptions = {
+      from: 'chandigarh.ca.1233@gmail.com',
+      to: `${email}`,
+      subject: 'CA - Credentials ',
+      text: `Your Credentials are here Email:- ${email} Password:- ${password} `,
+      html : `<div>
+        <h1>Your Credentials are given below</h1>
+      <p>Email :- ${email}</p> 
+      <p>Password :- ${password}</p>
+      <h5 style={{color  : 'red'}}>Note - dnt share your credentials with anyone</h5>
+      </div>`
+    };
+
+
+    transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Email sent: ' + info.response);
+  }
+});
+
+
 
     res.status(200).json(user);
   } catch (error) {
