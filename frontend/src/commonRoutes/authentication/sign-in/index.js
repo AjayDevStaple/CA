@@ -21,9 +21,9 @@ import BasicLayout from "user/layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { userData, logout } from "../../../../redux/reducer";
+import { userData, logout } from "../../../../src/redux/reducer/index";
 
-import { _services } from "../../../../Services/Api/index";
+import { _services } from "../../../Services/Api/index";
 
 function Basic() {
   const { token, userType } = useSelector((state) => state?.userProfile?.userData);
@@ -43,7 +43,7 @@ function Basic() {
     rememberMe: rememberMe,
   });
 
-  console.log("---------------user sign in page-------");
+  console.log("---------------common route started-------");
 
   console.log(token + "---token");
   console.log(userType + "---userType");
@@ -88,10 +88,10 @@ function Basic() {
       .then((res) => {
         dispatch(userData(res.data));
 
-        if (res.data.userType == "1") {
-          navigate("/dashboard");
+        if (res.data.userType === "1") {
+          navigate("/admindashboard");
         } else {
-          navigate("/dashboard");
+          navigate("/userdashboard");
         }
 
         console.log(res.data);
@@ -129,10 +129,10 @@ function Basic() {
     name === errorMessages.name && <div className="error">{errorMessages.message}</div>;
 
   useEffect(() => {
-    //   console.log(isLogin)
-    //  if(isLogin){
-    //   navigate('/dashboard')
-    //  }
+    // console.log(isLogin);
+    // if (isLogin) {
+    //   navigate("/dashboard");
+    // }
   }, []);
   return (
     <BasicLayout image={bgImage}>

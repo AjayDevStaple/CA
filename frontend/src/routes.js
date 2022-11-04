@@ -36,7 +36,7 @@ Coded by www.creative-tim.com
 */
 
 // Material Dashboard 2 React layouts
-import Dashboard from "user/layouts/dashboard";
+import UserDashboard from "user/layouts/dashboard";
 
 import AdminDashboard from "admin/layouts/dashboard";
 import Tables from "user/layouts/tables";
@@ -44,7 +44,7 @@ import Tables from "user/layouts/tables";
 // import RTL from "user/layouts/rtl";
 // import Notifications from "user/layouts/notifications";
 // import Profile from "user/layouts/profile";
-import SignIn from "user/layouts/authentication/sign-in";
+import SignIn from "../src/commonRoutes/authentication/sign-in/index";
 // import SignUp from "user/layouts/authentication/sign-up";
 
 // @mui icons
@@ -56,8 +56,8 @@ export const userRoutes = [
     name: "Dashboard",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
-    component: <Dashboard />,
+    route: "/userdashboard",
+    component: <UserDashboard />,
   },
   {
     type: "collapse",
@@ -75,17 +75,17 @@ export const adminRoutes = [
     name: "Dashboard",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
+    route: "/admindashboard",
     component: <AdminDashboard />,
   },
 ];
 
 export const comonRoutes = [
- {
-    // type: "collapse",
-    // name: "Sign In",
-    // key: "sign-in",
-    // icon: <Icon fontSize="small">login</Icon>,
+  {
+    type: "collapse",
+    name: "Sign In",
+    key: "sign-in",
+    icon: <Icon fontSize="small">login</Icon>,
     route: "/",
     component: <SignIn />,
   },

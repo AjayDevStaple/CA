@@ -15,10 +15,10 @@ import theme from "assets/theme";
 // Material Dashboard 2 React Dark Mode themes
 import themeDark from "assets/theme-dark";
 // Material Dashboard 2 React routes
-import { userRoutes,adminRoutes,comonRoutes} from "routes";
+import { userRoutes, adminRoutes, comonRoutes } from "routes";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
-import { useSelector } from 'react-redux'
+import { useSelector } from "react-redux";
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
@@ -27,11 +27,18 @@ import UserRoute from "components/UserRoute";
 import Dashboard from "user/layouts/dashboard";
 import SignIn from "user/layouts/authentication/sign-in";
 export default function App() {
-
-  const { token,userType } = useSelector(state => state?.userProfile?.userData)
-  const isLogin = token && userType ? true :false || false;
-  const rout = userType!=undefined && userType=='2' ? userRoutes : userType=='1'? adminRoutes : comonRoutes;
-  const navigate  = useNavigate ();
+  const { token, userType } = useSelector((state) => state?.userProfile?.userData);
+  console.log(token);
+  console.log(userType);
+  const isLogin = token && userType ? true : false || false;
+  const [routee, setRoute] = useState();
+  const rout =
+    userType != undefined && userType == "2"
+      ? userRoutes
+      : userType == "1"
+      ? adminRoutes
+      : comonRoutes;
+  const navigate = useNavigate();
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -44,7 +51,6 @@ export default function App() {
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
-
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -72,15 +78,19 @@ export default function App() {
 
   // Setting page scroll to 0 when changing the route
   useEffect(() => {
-    if(isLogin){
-      navigate('/dashboard')
-    }else{
-      navigate('/')
+    console.log("----------" + isLogin);
+    if (isLogin) {
+      navigate("/admindashboard");
+    } else {
+      navigate("/");
     }
   }, []);
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
+      {
+        console.log(route);
+      }
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
@@ -117,33 +127,31 @@ export default function App() {
   );
 
   return (
-  <ThemeProvider theme={darkMode ? themeDark : theme}>
-    <CssBaseline />
-    
+    <ThemeProvider theme={darkMode ? themeDark : theme}>
+      <CssBaseline />
 
-      {isLogin && <> <Sidenav
-      color={sidenavColor}
-      brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-      brandName=""
-      routes={rout}
-      onMouseEnter={handleOnMouseEnter}
-      onMouseLeave={handleOnMouseLeave}
-      />
-      
-      <Configurator />
-       {configsButton}
-      
-      </>
-      }
+      {isLogin && (
+        <>
+          {" "}
+          <Sidenav
+            color={sidenavColor}
+            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+            brandName=""
+            routes={rout}
+            onMouseEnter={handleOnMouseEnter}
+            onMouseLeave={handleOnMouseLeave}
+          />
+          <Configurator />
+          {configsButton}
+        </>
+      )}
 
-      
-    <Routes>
-      {getRoutes(token!=''  && userType=='1' ? userRoutes: token!=''  && userType==='admin' ? adminRoutes :comonRoutes)}
-      {/* {getRoutes(rout)} */}
-      {/* <Route path="*" element={<Navigate to="/" />} /> */}
-    </Routes>
-  </ThemeProvider>
-  )
+      <Routes>
+        {getRoutes(token === undefined && userType === undefined ? comonRoutes : adminRoutes)}
+        {/* 
+        {getRoutes(routee)} */}
+        {/* <Route path="*" element={<Navigate to="/" />} /> */}
+      </Routes>
+    </ThemeProvider>
+  );
 }
-
-
