@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 // react-router components
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 // @mui material components
@@ -22,14 +23,17 @@ import { useSelector } from "react-redux";
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import { Navigate } from "react-router-dom";
+
 
 import UserRoute from "components/UserRoute";
 import Dashboard from "user/layouts/dashboard";
 import SignIn from "user/layouts/authentication/sign-in";
 export default function App() {
-  const { token, userType } = useSelector((state) => state?.userProfile?.userData);
+  const { token, userType , name} = useSelector((state) => state?.userProfile?.userData);
   console.log(token);
   console.log(userType);
+  console.log(name)
   const isLogin = token && userType ? true : false || false;
   const [routee, setRoute] = useState();
   const rout =
@@ -79,11 +83,11 @@ export default function App() {
   // Setting page scroll to 0 when changing the route
   useEffect(() => {
     console.log("----------" + isLogin);
-    if (isLogin) {
-      navigate("/admindashboard");
-    } else {
-      navigate("/");
-    }
+    // if (isLogin) {
+    //   navigate("/admindashboard");
+    // } else {
+    //   navigate("/");
+    // }
   }, []);
 
   const getRoutes = (allRoutes) =>
@@ -147,10 +151,11 @@ export default function App() {
       )}
 
       <Routes>
-        {getRoutes(token === undefined && userType === undefined ? comonRoutes : adminRoutes)}
+        {getRoutes(token === undefined  ? comonRoutes : userType === '1'  ? adminRoutes: userRoutes )}
+
         {/* 
         {getRoutes(routee)} */}
-        {/* <Route path="*" element={<Navigate to="/" />} /> */}
+       <Route path="/userdashboard" element={<Navigate to="/userdashboard" />} />
       </Routes>
     </ThemeProvider>
   );

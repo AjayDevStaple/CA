@@ -25,6 +25,7 @@ import { userData, logout } from "../../../../src/redux/reducer/index";
 
 import { _services } from "../../../Services/Api/index";
 
+
 function Basic() {
   const { token, userType } = useSelector((state) => state?.userProfile?.userData);
   const isLogin = token && userType ? true : false || false;
@@ -68,7 +69,7 @@ function Basic() {
   // ];
 
   const errors = {
-    uname: "invalid useddrname",
+    uname: "invalid username",
     pass: "invalid password",
   };
 
@@ -86,6 +87,7 @@ function Basic() {
     _services
       .user_login(loginForm)
       .then((res) => {
+        
         dispatch(userData(res.data));
 
         if (res.data.userType === "1") {

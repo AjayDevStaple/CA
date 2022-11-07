@@ -22,8 +22,22 @@ import axios from "axios";
 import { url } from "../../../Services/BaseURL/index";
 
 import { EnumDocType } from "constants/constants";
+import EditIcon from '@mui/icons-material/Edit';
 
-function AdminDashboard() {
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import Loader from "components/Loader";
+
+import success from "../../../assets/success.png";
+import failed from "../../../assets/failed.png";
+
+
+
+function AdminDashboard () {
+
+  
+
+ 
   console.log("admin dashboard");
   const dispatch = useDispatch();
   const location = useLocation();
@@ -37,6 +51,7 @@ function AdminDashboard() {
   const [showDocList, setShowDocList] = useState(false);
   const [userList, setUserList] = useState();
   const [docListTable, setDocListTable] = useState({});
+  const [isLoadin, setIsloading] = useState(false);
   const [docData, setDocData] = useState({
     documentType: "",
     documentDesc: "",
@@ -48,32 +63,48 @@ function AdminDashboard() {
     name: "",
     email: "",
     userType: "",
-    password: `${Math.floor(Date.now() / 1000)}`,
+    password: "",
   });
+
+  
+
   const [updateUserData, setUpdateUserData] = useState({ name: "", email: "" });
+
+  const [modalShow, setModalShow] = useState(false);
+  const [errMsg , setErrMsg] = useState('');
+
+  const [pass , setPass] = useState(true);
 
   useEffect(() => {
     GetData();
   }, []);
 
   function GetData() {
+
+    setIsloading(true)
     _services.get_user_list().then((res) => {
       setTableData(res.data);
+      setTimeout(() => setIsloading(false),1000)
+     
     });
 
     _services.total_doc().then((res) => {
       setDocCount(res.data)
+      console.log(res.data)
       console.log(docCount)
+      
     })
   }
 
   function handleClick(flag) {
     if (flag === "upload") {
+      setIsloading(true)
       _services
         .get_user_list()
         .then((res) => {
           setUserList(res.data);
           setdilogOpen(true);
+          setIsloading(false)
         })
         .catch((err) => {});
     } else {
@@ -82,10 +113,15 @@ function AdminDashboard() {
   }
 
   function handleDelete(id) {
+    setIsloading(true)
     _services.delete_User(id).then((res) => {
-      console.log(res);
+     
       if (res.status === 200) {
+        
+        setModalShow(true)
+        setErrMsg(res.data);
         GetData();
+        setIsloading(false)
       }
     });
   }
@@ -96,20 +132,37 @@ function AdminDashboard() {
   }
 
   function update_User() {
+    setIsloading(true)
     _services.update_User(id2update, updateUserData).then((res) => {
       if (res.status === 200) {
         setUpdateOpen(false);
         GetData();
+        setIsloading(false)
       }
     });
   }
 
   function create_User() {
+    console.log('createing user')
+    setIsloading(true)
+    const generatedPass = `${Math.floor(Date.now() / 1000)}`;
+    setNewUserData({ ...newUserData, password: generatedPass });
     console.log(newUserData);
     _services.create_User(newUserData).then((res) => {
       if (res.status == 200) {
+
+        setModalShow(true)
+        setErrMsg(res.data)
         setCreateOpen(false);
+        setIsloading(false)
+        
         GetData();
+      } else {
+
+        setModalShow(true)
+        setErrMsg(res.data)
+        setPass(false)
+
       }
     });
   }
@@ -121,36 +174,48 @@ function AdminDashboard() {
     formData.append("uploadFile", docData.uploadFile);
     formData.append("userID", docData.userID);
 
+    setIsloading(true)
+
     axios
       .post(`${url}api/admin/doc`, formData)
       .then((response) => {
         console.log(response.status);
         if (response.status === 200) {
           setdilogOpen(false);
+          setIsloading(true)
+          setModalShow(true)
+          setErrMsg(response.data)
           GetData();
+
         }
       })
       .catch((err) => {
         console.log(err);
+        setModalShow(true)
+        setErrMsg(response.data)
       });
   }
 
   function handleDocumentView(id) {
+    setIsloading(true)
     _services.list_docs(id).then((res) => {
       console.log(res);
       if (res.status === 200) {
         setShowDocList(true);
         setDocListTable(res.data);
+        setIsloading(false)
       }
     });
   }
 
   function deleteDoc(item) {
+    setIsloading(true)
     const documentID = item._id;
     const userID = item.userID;
     _services.delete_document(documentID).then((res) => {
       if (res.status === 200) {
         handleDocumentView(userID);
+        setIsloading(false)
       }
     });
   }
@@ -160,334 +225,337 @@ function AdminDashboard() {
 
     GetData();
   }
-
+console.log(modalShow)
   console.log(showDocList);
-  return (
-    <DashboardLayout>
-      <DashboardNavbar />
-      <MDBox py={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Total Document"
-                count={281}
-                percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Total Users"
-                count= {tableData.length}
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Subscription Revenue"
-                count="34k"
-                percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
-              />
-            </MDBox>
-          </Grid>
-
-          <button onClick={() => handleClick("upload")}>UPLOAD </button>
-
-          <button onClick={() => handleClick("create")}> create user </button>
-
-          {dialogOpen === true && (
-            <Modal show={dialogOpen} animation={true}>
-              <Modal.Header closeButton>
-                <Modal.Title>Upload Document</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <input
-                  type="file"
-                  onChange={(e) => {
-                    setDocData({ ...docData, uploadFile: e.target.files[0] });
-                  }}
-                />
-                <Form.Select
-                  aria-label="Default select example"
-                  className="mt-3"
-                  onChange={(e) => {
-                    setDocData({ ...docData, documentType: e.target.value });
-                  }}
-                >
-                  <option>Select Document Type</option>
-                  <option value="1">ITR</option>
-                  <option value="2">Pan Card</option>
-                  <option value="3">Adhar Card</option>
-                  <option value="4">GST invoice</option>
-                </Form.Select>
-                <textarea
-                  className="mt-3"
-                  style={{ width: "465px" }}
-                  type="text"
-                  placeholder="document description"
-                  onChange={(e) => {
-                    setDocData({ ...docData, documentDesc: e.target.value });
-                  }}
-                />
-
-                <Form.Select
-                  aria-label="Default select example"
-                  className="mt-3"
-                  onChange={(e) => {
-                    setDocData({ ...docData, userID: e.target.value });
-                  }}
-                >
-                  <option>Select User</option>
-                  {userList.map((item) => (
-                    <option value={item._id}>{item.name}</option>
-                  ))}
-                </Form.Select>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={() => setdilogOpen(false)}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={() => uploaded_Doc()}>
-                  Save Changes
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          )}
-
-          {createOpen === true && (
-            <Modal show={createOpen} animation={true}>
-              <Modal.Header closeButton>
-                <Modal.Title>Fill user Information</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <input
-                  type="text"
-                  placeholder="Name of user"
-                  onChange={(e) => {
-                    setNewUserData({ ...newUserData, name: e.target.value });
-                  }}
-                />
-                <input
-                  type="email"
-                  placeholder="Email of user"
-                  onChange={(e) => {
-                    setNewUserData({ ...newUserData, email: e.target.value });
-                  }}
-                />
-
-                <Form.Select
-                  aria-label="Default select example"
-                  className="mt-3"
-                  onChange={(e) => {
-                    setNewUserData({ ...newUserData, userType: e.target.value });
-                  }}
-                >
-                  <option>Select Type of User</option>
-                  <option value="1">Admin</option>
-                  <option value="2">User</option>
-                </Form.Select>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={() => setCreateOpen(false)}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={() => create_User()}>
-                  Save Changes
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          )}
-
-          {updateOpen === true && (
-            <Modal show={updateOpen} animation={true}>
-              <Modal.Header closeButton>
-                <Modal.Title>Update User Information</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <input
-                  type="text"
-                  placeholder="Update Name of user"
-                  onChange={(e) => {
-                    setUpdateUserData({ ...updateUserData, name: e.target.value });
-                  }}
-                />
-                <input
-                  type="email"
-                  placeholder="Update Email of user"
-                  onChange={(e) => {
-                    setUpdateUserData({ ...updateUserData, email: e.target.value });
-                  }}
-                />
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={() => setUpdateOpen(false)}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={() => update_User()}>
-                  Save Changes
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          )}
-
-          {showDocList === true && (
-            <Modal
-              size="lg"
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-              show={showDocList}
-              animation={true}
-            >
-              <Modal.Header>
-                <Modal.Title>List of documents</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <tr>
-                  <th className="th">Description</th>
-                  <th className="th">Type</th>
-                  <th className="th">View</th>
-                  <th className="th">Uploaded On</th>
-                </tr>
-
-                {docListTable.length > 0 &&
-                  docListTable?.map((item) => (
-                    <table className="table">
-                      <tr>
-                        <td className="td">{item.documentDesc}</td>
-
-                        <td className="td"> {EnumDocType[item.documentType]}</td>
-
-                        <td className="td">
-                          {" "}
-                          <a href={"http://127.0.0.1:8081/" + item.docUrl}>View</a>{" "}
-                        </td>
-                        <td className="td"> {item.updatedAt}</td>
-                        <td className="td">
-                          <button onClick={() => deleteDoc(item)}> Delete Doc</button>
-                        </td>
-                      </tr>
-                    </table>
-                  ))}
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={() => closeDocList()}>
-                  Close
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          )}
-        </Grid>
-      </MDBox>
-      <Grid>
-        <MDBox className="mt-5">
-          <h2>User Table</h2>
-
-          {/* <Table striped bordered hover>
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Document No.</th>
-              <th>Email</th>
-              <th>Delete</th>
-              <th>Update</th>
-              <th>View Documents</th>
-            </tr>
-            </thead>
-          </Table> */}
-          <Table striped bordered hover size="sm">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Document No.</th>
-                <th>Email</th>
-                <th>Delete</th>
-                <th>Update</th>
-                <th>View Documents</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.length > 0 &&
-                tableData?.map((item) => (
-                  <tr>
-                    <td>{item.name}</td>
-                    <td>{item.documentNo}</td>
-                    <td>{item.email}</td>
-                    <td>
-                      <button onClick={() => handleDelete(item._id)}>delete</button>
-                    </td>
-                    <td>
-                      <button onClick={() => handleUpdate(item._id)}>update user</button>
-                    </td>
-                    <td>
-                      <button onClick={() => handleDocumentView(item._id)}>View</button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
-
-          {/* {tableData.length > 0 &&
-            tableData?.map((item) => (
-              <Table striped bordered hover>
-                <tbody>
-                  <tr>
-                    <td>{item.name}</td>
-                    <td>{item.documentNo}</td>
-                    <td>{item.email}</td>
-                    <td>
-                      <button onClick={() => handleDelete(item._id)}>delete</button>
-                    </td>
-                    <td>
-                      <button onClick={() => handleUpdate(item._id)}>update user</button>
-                    </td>
-                    <td>
-                      <button onClick={() => handleDocumentView(item._id)}>View</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            ))} */}
+  return  (  isLoadin === true ? <Loader /> :
+  <DashboardLayout>
+  <DashboardNavbar />
+  <MDBox py={3}>
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={6} lg={3}>
+        <MDBox mb={1.5}>
+          <ComplexStatisticsCard
+            color="dark"
+            icon="weekend"
+            title="Total Document"
+            count={docCount}
+            percentage={{
+              color: "success",
+              amount: "+55%",
+              label: "than lask week",
+            }}
+          />
         </MDBox>
       </Grid>
-      <Footer />
-    </DashboardLayout>
-  );
-}
+      <Grid item xs={12} md={6} lg={3}>
+        <MDBox mb={1.5}>
+          <ComplexStatisticsCard
+            icon="leaderboard"
+            title="Total Users"
+            count= {tableData.length}
+            percentage={{
+              color: "success",
+              amount: "+3%",
+              label: "than last month",
+            }}
+          />
+        </MDBox>
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <MDBox mb={1.5}>
+          <ComplexStatisticsCard
+            color="success"
+            icon="store"
+            title="Subscription Revenue"
+            count= {tableData.length * 100}
+            percentage={{
+              color: "success",
+              amount: "+1%",
+              label: "than yesterday",
+            }}
+          />
+        </MDBox>
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <MDBox mb={1.5}>
+          <ComplexStatisticsCard
+            color="primary"
+            icon="person_add"
+            title="Followers"
+            count="+91"
+            percentage={{
+              color: "success",
+              amount: "",
+              label: "Just updated",
+            }}
+          />
+        </MDBox>
+      </Grid>
 
-export default AdminDashboard;
+      <button onClick={() => handleClick("upload")}>UPLOAD </button>
+
+      <button onClick={() => handleClick("create")}> create user </button>
+
+      {dialogOpen === true && (
+        <Modal show={dialogOpen} animation={true}>
+          <Modal.Header closeButton>
+            <Modal.Title>Upload Document</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              type="file"
+              onChange={(e) => {
+                setDocData({ ...docData, uploadFile: e.target.files[0] });
+              }}
+            />
+            <Form.Select
+              aria-label="Default select example"
+              className="mt-3"
+              onChange={(e) => {
+                setDocData({ ...docData, documentType: e.target.value });
+              }}
+            >
+              <option>Select Document Type</option>
+              <option value="1">ITR</option>
+              <option value="2">Pan Card</option>
+              <option value="3">Adhar Card</option>
+              <option value="4">GST invoice</option>
+            </Form.Select>
+            <textarea
+              className="mt-3"
+              style={{ width: "465px" }}
+              type="text"
+              placeholder="document description"
+              onChange={(e) => {
+                setDocData({ ...docData, documentDesc: e.target.value });
+              }}
+            />
+
+            <Form.Select
+              aria-label="Default select example"
+              className="mt-3"
+              onChange={(e) => {
+                setDocData({ ...docData, userID: e.target.value });
+              }}
+            >
+              <option>Select User</option>
+              {userList.map((item) => (
+                <option value={item._id}>{item.name}</option>
+              ))}
+            </Form.Select>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setdilogOpen(false)}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={() => uploaded_Doc()}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {createOpen === true && (
+        <Modal show={createOpen} animation={true}>
+          <Modal.Header closeButton>
+            <Modal.Title>Fill user Information</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              type="text"
+              placeholder="Name of user"
+              onChange={(e) => {
+                setNewUserData({ ...newUserData, name: e.target.value });
+              }}
+            />
+            <input
+              type="email"
+              placeholder="Email of user"
+              onChange={(e) => {
+                setNewUserData({ ...newUserData, email: e.target.value });
+              }}
+            />
+
+            <Form.Select
+              aria-label="Default select example"
+              className="mt-3"
+              onChange={(e) => {
+                setNewUserData({ ...newUserData, userType: e.target.value });
+              }}
+            >
+              <option>Select Type of User</option>
+              <option value="1">Admin</option>
+              <option value="2">User</option>
+            </Form.Select>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setCreateOpen(false)}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={() => create_User()}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {updateOpen === true && (
+        <Modal show={updateOpen} animation={true}>
+          <Modal.Header closeButton>
+            <Modal.Title>Update User Information</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <input
+              type="text"
+              placeholder="Update Name of user"
+              onChange={(e) => {
+                setUpdateUserData({ ...updateUserData, name: e.target.value });
+              }}
+            />
+            <input
+              type="email"
+              placeholder="Update Email of user"
+              onChange={(e) => {
+                setUpdateUserData({ ...updateUserData, email: e.target.value });
+              }}
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setUpdateOpen(false)}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={() => update_User()}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {showDocList === true && (
+        <Modal
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          show={showDocList}
+          animation={true}
+        >
+          <Modal.Header>
+            <Modal.Title>List of documents</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+
+          <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
+              <th>Description</th>
+              <th>Type</th>
+              <th>View</th>
+              <th>Uploaded On</th>
+          
+          </tr>
+        </thead>
+        <tbody>
+        {docListTable.length > 0 &&
+              docListTable?.map((item) => (
+                
+                  <tr>
+                    <td className="td">{item.documentDesc}</td>
+
+                    <td className="td"> {EnumDocType[item.documentType]}</td>
+
+                    <td className="td">
+                    <RemoveRedEyeIcon onClick={() => window.open(`http://127.0.0.1:8081/${item.docUrl}`)}  />
+                    </td>
+                    <td className="td"> {item.updatedAt}</td>
+                    <td className="td">
+                    <DeleteOutlinedIcon onClick={() => deleteDoc(item)} />
+                                             
+                    </td>
+                  </tr>
+                
+              ))}
+        </tbody>
+      </Table>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => closeDocList()}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+    </Grid>
+  </MDBox>
+  <Grid>
+    <MDBox className="mt-5">
+      <h2 style={{textAlign: 'center'}}>User Table</h2>
+      <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
+            <th className="th">Name</th>
+            <th>Document No.</th>
+            <th>Email</th>
+            <th>Delete</th>
+            <th>Update</th>
+            <th>View Documents</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tableData.length > 0 &&
+            tableData?.map((item) => (
+              <tr>
+                <td>{item.name}</td>
+                <td>{item.documentNo}</td>
+                <td>{item.email}</td>
+                <td>
+                  
+                  <DeleteOutlinedIcon onClick={() =>  handleDelete(item._id)} />
+                </td>
+                <td>
+          
+                <EditIcon  onClick={() => handleUpdate(item._id)}    />
+              
+                </td>
+                <td>
+                <RemoveRedEyeIcon onClick={() => handleDocumentView(item._id)}   />
+                  
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </Table>
+    </MDBox>
+  </Grid>
+  <Footer />
+
+  {modalShow &&  <Modal
+      show={modalShow}
+      size="md"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Body>
+        <img src={pass === false ? failed : success} style={{height: '100px', width: '100px', display:'flex', marginLeft : '40%',
+        alignItems: 'center',
+        justifyContent: 'center',
+       }} alt="success logo"/>
+        <p className="mt-3" style={{textAlign: 'center' , color:'green'}}>
+          {errMsg}
+        </p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={() => setModalShow(false) }>Ok</Button>
+      </Modal.Footer>
+    </Modal> }
+
+
+
+
+
+
+</DashboardLayout>
+  
+  );
+
+  }
+export default AdminDashboard

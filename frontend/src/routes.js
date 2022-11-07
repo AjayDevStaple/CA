@@ -55,7 +55,7 @@ export const userRoutes = [
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
+    icon: <Icon fontSize="small">Dashboard</Icon>,
     route: "/userdashboard",
     component: <UserDashboard />,
   },

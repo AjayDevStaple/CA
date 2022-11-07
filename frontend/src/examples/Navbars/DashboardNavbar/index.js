@@ -66,6 +66,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const disptch = useDispatch()
   useEffect(() => {
     // Setting the navbar type
+    
+    // console.log(token)
     if (fixedNavbar) {
       setNavbarType("sticky");
     } else {
@@ -96,6 +98,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleCloseMenu = () => setOpenMenu(false);
   const handleOpenUserMenu = (event) => setOpenUserMenu(event.currentTarget);
   const handleCloseUserMenu = () => setOpenUserMenu(false);
+  const { name  } = useSelector((state) => state?.userProfile?.userData);
 // Render the notifications menu
 
   // flush user session logout
@@ -117,7 +120,7 @@ const renderUserMenu = () => (
     onClose={handleCloseUserMenu}
     sx={{ mt: 2 }}
   >
-    <NotificationItem icon={<Icon>email</Icon>} title="User Name" />
+    <NotificationItem icon={<Icon>email</Icon>} title={name} />
     <NotificationItem icon={<Icon>podcasts</Icon>} title="Email" />
     <NotificationItem icon={<Icon>LogOut</Icon>} title="LogOut" onClick={handleLogout} />
   </Menu>

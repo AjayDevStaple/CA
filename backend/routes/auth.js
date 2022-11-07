@@ -6,15 +6,10 @@ const User = require('../models/Users')
 
 const nodemailer = require('nodemailer');
 
-
-
-
+ 
 
 
 router.use(cors());
-
-
-
 
 //signup
 router.post('/signup', async (req, res) => {
@@ -22,7 +17,7 @@ router.post('/signup', async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(req.body.password, salt);
-
+ console.log(req.body.password)
     const newUser = new User({
       name: req.body.name,
       email: req.body.email,
@@ -30,17 +25,14 @@ router.post('/signup', async (req, res) => {
       userType: req.body.userType,
     });
 
-    console.log(newUser);
-
     const user = await newUser.save();
-
-
-    console.log(req.body.email)
-
-
     const email =  req.body.email;
     const password = req.body.password;
 
+    console.log(password)
+
+
+   
 
     var transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -50,7 +42,7 @@ router.post('/signup', async (req, res) => {
       }
     });
     
-    var mailOptions = {
+    const mailOptions = {
       from: 'chandigarh.ca.1233@gmail.com',
       to: `${email}`,
       subject: 'CA - Credentials ',
@@ -63,18 +55,15 @@ router.post('/signup', async (req, res) => {
       </div>`
     };
 
-
     transporter.sendMail(mailOptions, function(error, info){
-  if (error) {
-    console.log(error);
-  } else {
+    if (error) {
+    console.log(error.response);
+    } else {
     console.log('Email sent: ' + info.response);
-  }
-});
-
-
-
-    res.status(200).json(user);
+    res.status(200).json('Successfully created a User');
+   }
+    });
+    
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -85,29 +74,24 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
+    console.log(user)
 
-    !user && res.status(404).json('User not found');
+    // !user && res.status(404).json('User not found');
 
     const validPassword = await bcrypt.compare(
       req.body.password,
       user.password
     );
 
-    !validPassword && res.status(400).json('Password is invalid');
+    //!validPassword && res.status(400).json('Password is invalid'); 
 
     const userData = {
       userId: user._id,
       email: user.email,
       userType: user.userType,
-      
+           
     };
 
-    // const userDatatoSend = {
-    //   userId: user._id,
-    //   email: user.email,
-    //   userType: user.admin,
-      
-    // };
     
     const accessToken = jwt.sign(
       userData,
@@ -120,6 +104,7 @@ router.post('/login', async (req, res) => {
     const uData = {
       userId: user._id,
       email: user.email,
+      name: user.name,
       userType: user.userType,
       token:accessToken
     };
