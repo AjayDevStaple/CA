@@ -11,7 +11,7 @@ import Footer from "examples/Footer";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import Table from '@mui/material/Table';
+import Table from "react-bootstrap/Table";
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -57,55 +57,71 @@ console.log(userId)
     });
   }
 
-  
-
-
   return (
     <DashboardLayout >
       <DashboardNavbar />
 
 
 
-<div>
+
+   <Grid>
+   <MDBox className="mt-5">
+   <h2 style={{textAlign: 'center'}}>Document Table</h2>
 
 
-{/* 
-<TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Document Name</TableCell>
-            <TableCell align="right">Description</TableCell>
-            <TableCell align="right">Type</TableCell>
-            <TableCell align="right">View</TableCell>
-            <TableCell align="right">Download</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
 
-          {data.map((item) => (
-            <TableRow
+   <Table striped bordered hover size="sm">
+        <thead>
+          <tr>
          
-            >
-              <TableCell component="th" scope="row">
-                
-              </TableCell>
-              <TableCell align="right">{item.documentType}</TableCell>
-              <TableCell align="right">{item.documentDesc}</TableCell>
-              <TableCell align="right">{item.updatedAt}</TableCell>
-            
-            </TableRow>
-          ))}
-        </TableBody>
+
+
+
+            <th>Description</th>
+              <th>Type</th>
+              <th>View</th>
+              <th>Uploaded On</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.length > 0 &&
+            data?.map((item) => (
+              <tr>
+                <td>{item.documentDesc}</td>
+                <td>{EnumDocType[item.documentType]}</td>
+                <td>
+                <RemoveRedEyeIcon onClick={() => window.open(`http://127.0.0.1:8081/${item.docUrl}`)}  />
+                </td>
+
+
+
+
+                <td>
+                  
+                {item.updatedAt.slice(0, 10)}
+                </td>
+               
+               
+                <td>
+                <a href={`http://127.0.0.1:8081/${item.docUrl}`} download>Download file</a>
+                </td>
+              </tr>
+            ))}
+        </tbody>
       </Table>
-    </TableContainer> */}
 
 
 
 
+
+
+    </MDBox>
 
     
-    <Table striped bordered hover size="sm">
+
+
+   </Grid>
+    {/* <Table striped bordered hover size="sm">
         <thead>
           <tr>
               <th>Description</th>
@@ -127,7 +143,7 @@ console.log(userId)
                     <td className="td">
                     <RemoveRedEyeIcon onClick={() => window.open(`http://127.0.0.1:8081/${item.docUrl}`)}  />
                     </td>
-                    <td className="td"> {item.updatedAt}</td>
+                    <td className="td">  {item.updatedAt.slice(0, 10)}</td>
 
                     <a href={`http://127.0.0.1:8081/${item.docUrl}`} download>Download file</a>
                   
@@ -135,10 +151,10 @@ console.log(userId)
                 
               ))}
         </tbody>
-      </Table>
+      </Table> */}
 
 
-</div>
+
       
 
      

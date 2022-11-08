@@ -31,6 +31,25 @@ import Loader from "components/Loader";
 import success from "../../../assets/success.png";
 import failed from "../../../assets/failed.png";
 
+import MDBadge from "components/MDBadge";
+import MDInput from "components/MDInput";
+
+import MDAlert from "components/MDAlert";
+import {
+  MDBBtn,
+  MDBModal,
+  MDBModalDialog,
+  MDBModalContent,
+  MDBModalHeader,
+  MDBModalTitle,
+  MDBModalBody,
+  MDBModalFooter,
+  MDBTextArea 
+} from 'mdb-react-ui-kit';
+
+
+
+
 
 
 function AdminDashboard () {
@@ -68,6 +87,8 @@ function AdminDashboard () {
 
   
 
+  
+console.log(docListTable)
   const [updateUserData, setUpdateUserData] = useState({ name: "", email: "" });
 
   const [modalShow, setModalShow] = useState(false);
@@ -78,6 +99,10 @@ function AdminDashboard () {
   useEffect(() => {
     GetData();
   }, []);
+
+  
+
+  const toggleShow = () => setdilogOpen(!dialogOpen);
 
   function GetData() {
 
@@ -233,6 +258,7 @@ console.log(modalShow)
   <MDBox py={3}>
     <Grid container spacing={3}>
       <Grid item xs={12} md={6} lg={3}>
+        
         <MDBox mb={1.5}>
           <ComplexStatisticsCard
             color="dark"
@@ -244,8 +270,19 @@ console.log(modalShow)
               amount: "+55%",
               label: "than lask week",
             }}
+            
           />
+          
+         <MDBadge style={{marginTop: '-90px', marginLeft: '250px' , color: 'whitesmoke'}} color='dark' onClick={() => handleClick("upload")} badgeContent="Add Document" container />
+          
         </MDBox>
+
+
+
+      
+
+    
+      
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
         <MDBox mb={1.5}>
@@ -259,6 +296,7 @@ console.log(modalShow)
               label: "than last month",
             }}
           />
+            <MDBadge style={{marginTop: '-90px', marginLeft: '280px' , color: 'whitesmoke'}} onClick={() => handleClick("create")} badgeContent="Add User" container />
         </MDBox>
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
@@ -292,23 +330,42 @@ console.log(modalShow)
         </MDBox>
       </Grid>
 
-      <button onClick={() => handleClick("upload")}>UPLOAD </button>
-
-      <button onClick={() => handleClick("create")}> create user </button>
-
+     
+  
       {dialogOpen === true && (
-        <Modal show={dialogOpen} animation={true}>
-          <Modal.Header closeButton>
-            <Modal.Title>Upload Document</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <input
+        <>
+
+<MDBBtn onClick={toggleShow}>Vertically centered modal</MDBBtn>
+
+<MDBModal tabIndex='-1' show={dialogOpen} setShow={setdilogOpen}>
+  <MDBModalDialog centered>
+    <MDBModalContent>
+      <MDBModalHeader>
+        <MDBModalTitle>Upload Document</MDBModalTitle>
+        <MDBBtn className='btn-close' color='none' onClick={toggleShow}></MDBBtn>
+      </MDBModalHeader>
+      <MDBModalBody>
+      <input
               type="file"
               onChange={(e) => {
                 setDocData({ ...docData, uploadFile: e.target.files[0] });
               }}
             />
-            <Form.Select
+
+<Form.Select
+              aria-label="Default select example"
+              className="mt-3"
+              onChange={(e) => {
+                setDocData({ ...docData, userID: e.target.value });
+              }}
+            >
+              <option>Select User</option>
+              {userList.map((item) => (
+                <option value={item._id}>{item.name}</option>
+              ))}
+            </Form.Select>
+                
+              <Form.Select
               aria-label="Default select example"
               className="mt-3"
               onChange={(e) => {
@@ -321,38 +378,28 @@ console.log(modalShow)
               <option value="3">Adhar Card</option>
               <option value="4">GST invoice</option>
             </Form.Select>
-            <textarea
-              className="mt-3"
-              style={{ width: "465px" }}
-              type="text"
-              placeholder="document description"
-              onChange={(e) => {
-                setDocData({ ...docData, documentDesc: e.target.value });
-              }}
-            />
 
-            <Form.Select
-              aria-label="Default select example"
-              className="mt-3"
-              onChange={(e) => {
-                setDocData({ ...docData, userID: e.target.value });
-              }}
-            >
-              <option>Select User</option>
-              {userList.map((item) => (
-                <option value={item._id}>{item.name}</option>
-              ))}
-            </Form.Select>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setdilogOpen(false)}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={() => uploaded_Doc()}>
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Modal>
+
+
+
+            <MDBTextArea placeholder='Document Description' className="mt-3" id='textAreaExample'  onChange={(e) => {
+                setDocData({ ...docData, documentDesc: e.target.value });
+              }}      type="text" rows={4} />
+    
+             
+      </MDBModalBody>
+      <MDBModalFooter>
+        <MDBBtn color='secondary' onClick={toggleShow}>
+          Close
+        </MDBBtn>
+        <MDBBtn onClick={() => uploaded_Doc()}>Save changes</MDBBtn>
+      </MDBModalFooter>
+    </MDBModalContent>
+  </MDBModalDialog>
+</MDBModal>
+
+</>
+
       )}
 
       {createOpen === true && (
@@ -405,16 +452,21 @@ console.log(modalShow)
             <Modal.Title>Update User Information</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <input
+
+
+          
+
+
+            <MDInput 
               type="text"
-              placeholder="Update Name of user"
+              label="Name"
               onChange={(e) => {
                 setUpdateUserData({ ...updateUserData, name: e.target.value });
               }}
             />
-            <input
+            <MDInput
               type="email"
-              placeholder="Update Email of user"
+              label="Email"
               onChange={(e) => {
                 setUpdateUserData({ ...updateUserData, email: e.target.value });
               }}
@@ -466,7 +518,7 @@ console.log(modalShow)
                     <td className="td">
                     <RemoveRedEyeIcon onClick={() => window.open(`http://127.0.0.1:8081/${item.docUrl}`)}  />
                     </td>
-                    <td className="td"> {item.updatedAt}</td>
+                    <td className="td"> {item.updatedAt.slice(0, 10)}</td>
                     <td className="td">
                     <DeleteOutlinedIcon onClick={() => deleteDoc(item)} />
                                              
