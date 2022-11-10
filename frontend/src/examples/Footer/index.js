@@ -27,6 +27,8 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 React base styles
 import typography from "assets/theme/base/typography";
 
+import GooglePayButton from "@google-pay/button-react";
+
 function Footer({ company, links }) {
   const { href, name } = company;
   const { size } = typography;
@@ -43,6 +45,7 @@ function Footer({ company, links }) {
     ));
 
   return (
+    <>
     <MDBox
       width="100%"
       display="flex"
@@ -92,8 +95,58 @@ function Footer({ company, links }) {
         })}
       >
         {renderLinks()}
+        
       </MDBox>
+  
     </MDBox>
+
+    <MDBox>
+          <GooglePayButton
+     environment="TEST"
+     buttonColor="default"
+     buttonType="subscribe"
+     buttonLocale="en"
+     buttonSizeMode="fill"
+     style={{width: '100%', height: 20}}
+
+
+  paymentRequest={{
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: [
+      {
+        type: 'CARD',
+        parameters: {
+          allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+          allowedCardNetworks: ['MASTERCARD', 'VISA'],
+        },
+        tokenizationSpecification: {
+          type: 'PAYMENT_GATEWAY',
+          parameters: {
+            gateway: 'example',
+            gatewayMerchantId: 'exampleGatewayMerchantId',
+          },
+        },
+      },
+    ],
+    merchantInfo: {
+      merchantId: '12345678901234567890',
+      merchantName: 'Demo Merchant',
+    },
+    transactionInfo: {
+      totalPriceStatus: 'FINAL',
+      totalPriceLabel: 'Total',
+      totalPrice: '1.00',
+      currencyCode: 'INR',
+      countryCode: 'IN',
+    },
+  }}
+  onLoadPaymentData={paymentRequest => {
+    console.log('load payment data', paymentRequest);
+  }}
+/>
+    </MDBox>
+    </>
   );
 }
 

@@ -52,7 +52,6 @@ function DashboardLayout({ children }) {
       })}
     >
       {children}
-      
     </MDBox>
   );
 }

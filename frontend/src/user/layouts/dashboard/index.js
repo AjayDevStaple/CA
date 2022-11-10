@@ -26,6 +26,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 //import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import GooglePayButton from '@google-pay/button-react';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import MDButton from "components/MDButton";
@@ -66,7 +67,10 @@ console.log(userId)
 
    <Grid>
    <MDBox className="mt-5">
+    
    <h2 style={{textAlign: 'center'}}>Document Table</h2>
+
+   
 
 
 
@@ -92,18 +96,12 @@ console.log(userId)
                 <td>
                 <RemoveRedEyeIcon onClick={() => window.open(`http://127.0.0.1:8081/${item.docUrl}`)}  />
                 </td>
-
-
-
-
-                <td>
-                  
+                <td>                  
                 {item.updatedAt.slice(0, 10)}
-                </td>
-               
-               
-                <td>
-                <a href={`http://127.0.0.1:8081/${item.docUrl}`} download>Download file</a>
+                </td>             
+               <td>
+                  
+                <a href={`http://127.0.0.1:8081/${item.docUrl}`} download >Download</a>
                 </td>
               </tr>
             ))}
@@ -121,43 +119,7 @@ console.log(userId)
 
 
    </Grid>
-    {/* <Table striped bordered hover size="sm">
-        <thead>
-          <tr>
-              <th>Description</th>
-              <th>Type</th>
-              <th>View</th>
-              <th>Uploaded On</th>
-          
-          </tr>
-        </thead>
-        <tbody>
-        {data.length > 0 &&
-              data?.map((item) => (
-                
-                  <tr>
-                    <td className="td">{item.documentDesc}</td>
-
-                    <td className="td"> {EnumDocType[item.documentType]}</td>
-
-                    <td className="td">
-                    <RemoveRedEyeIcon onClick={() => window.open(`http://127.0.0.1:8081/${item.docUrl}`)}  />
-                    </td>
-                    <td className="td">  {item.updatedAt.slice(0, 10)}</td>
-
-                    <a href={`http://127.0.0.1:8081/${item.docUrl}`} download>Download file</a>
-                  
-                  </tr>
-                
-              ))}
-        </tbody>
-      </Table> */}
-
-
-
-      
-
-     
+       
       <Footer />
     </DashboardLayout>
   );

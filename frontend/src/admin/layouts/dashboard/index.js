@@ -335,7 +335,6 @@ console.log(modalShow)
       {dialogOpen === true && (
         <>
 
-<MDBBtn onClick={toggleShow}>Vertically centered modal</MDBBtn>
 
 <MDBModal tabIndex='-1' show={dialogOpen} setShow={setdilogOpen}>
   <MDBModalDialog centered>
