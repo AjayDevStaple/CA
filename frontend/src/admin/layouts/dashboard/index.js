@@ -82,6 +82,8 @@ function AdminDashboard () {
   });
 
 
+  const [tempData, setTempData] = useState([]);
+
 
 
 
@@ -103,7 +105,7 @@ let newTable = tableData.filter(x => x["name"].toLowerCase().includes(e))
 
 
 
-setTableData(newTable)
+setTempData(newTable)
 
 }
 
@@ -128,6 +130,7 @@ setTableData(newTable)
     setIsloading(true)
     _services.get_user_list().then((res) => {
       setTableData(res.data);
+      setTempData(res.data)
       setTimeout(() => setIsloading(false),1000)
      
     });
@@ -563,8 +566,8 @@ setTableData(newTable)
           </tr>
         </thead>
         <tbody>
-          {tableData.length > 0 &&
-            tableData?.map((item) => (
+          {tempData.length > 0 &&
+            tempData?.map((item) => (
               <tr>
                 <td>{item.name}</td>
                 <td>{item.documentNo}</td>
