@@ -32,6 +32,9 @@ router.get("/users", async (req, res) => {
   }
 });
 
+//let of document types 
+
+
 //delete user if u are admin
 router.delete("/user/:id", async (req, res) => {
   try {
@@ -56,7 +59,7 @@ router.delete("/user/:id", async (req, res) => {
 
     console.log(deleteFromLocal);
 
-    res.status(200).json('Successfully deleted a User');
+    res.status(200).json("Successfully deleted a User");
   } catch (err) {
     res.status(500).json(err);
     console.log(err);
@@ -66,52 +69,41 @@ router.delete("/user/:id", async (req, res) => {
 //upload document files
 
 router.post("/doc", async (req, res) => {
-
-
-  try{
+  try {
     const fileName = Date.now() + "" + req.files.uploadFile.name;
-  const file = req.files.uploadFile;
-  let uploadPath = __dirname + "/uploaded_Docs/" + fileName;
+    const file = req.files.uploadFile;
+    let uploadPath = __dirname + "/uploaded_Docs/" + fileName;
 
-  let uploadpath2send = fileName;
+    let uploadpath2send = fileName;
 
-  console.log(uploadPath);
+    console.log(uploadPath);
 
-  file.mv(uploadPath, (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
+    file.mv(uploadPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
 
-  const newDoc = new Doc({
-    userID: req.body.userID,
-    documentType: req.body.documentType,
-    documentDesc: req.body.documentDesc,
-    docUrl: uploadpath2send,
-  });
+    const newDoc = new Doc({
+      userID: req.body.userID,
+      documentType: req.body.documentType,
+      documentDesc: req.body.documentDesc,
+      docUrl: uploadpath2send,
+    });
 
-  const listDoc = await Doc.find({ userID: req.body.userID });
+    const listDoc = await Doc.find({ userID: req.body.userID });
 
-  const newDocNo = listDoc.length + 1;
+    const newDocNo = listDoc.length + 1;
 
-  const updateDocNo = await User.findByIdAndUpdate(req.body.userID, {
-    documentNo: newDocNo,
-  });
+    const updateDocNo = await User.findByIdAndUpdate(req.body.userID, {
+      documentNo: newDocNo,
+    });
 
-  const document = await newDoc.save();
-  res.status(200).json(`Document is successfully uploaded`);
-
-  }catch(err) {
-
-    res.status(500).json(err)
-
-
-
+    const document = await newDoc.save();
+    res.status(200).json(`Document is successfully uploaded`);
+  } catch (err) {
+    res.status(500).json(err);
   }
-
-  
-
-  
 });
 
 //delete document
@@ -148,7 +140,6 @@ router.get("/list-docs/:id", async (req, res) => {
     res.status(200).json(listDoc);
 
     // const DocumentNo = await User.findById(req.body.userID, {documentNo : listDoc.length})
-
   } catch (err) {
     res.status(500).json(err);
   }
@@ -159,9 +150,7 @@ router.get("/totaldoc", async (req, res) => {
     const total_doc = await Doc.find();
     res.status(200).json(total_doc.length);
 
-
-
-    console.log(total_doc)
+    console.log(total_doc);
   } catch (err) {
     res.status(500).json(err);
   }

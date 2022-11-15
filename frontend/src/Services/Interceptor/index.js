@@ -7,6 +7,7 @@ console.log(store)
 axiosApiInstance.interceptors.request.use(
     async config => {
         config.headers = {
+            'Access-Control-Allow-Origin': '*',
             'Authorization': `Bearer ${store.getState()?.counter?.token}`,
            // 'Authorization': `Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTUxMiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJjbGllbnRpZCI6Im1hc2hyZXEiLCJuYmYiOjE2NTUxMTk2NzMsImV4cCI6MTY1NTEyMzI3M30`,
             'Content-Type': 'application/json'

@@ -26,6 +26,9 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
+import { useEffect, useState } from "react";
+
+import { _services } from "Services/Api";
 
 // Data
 import authorsTableData from "user/layouts/tables/data/authorsTableData";
@@ -33,10 +36,32 @@ import projectsTableData from "user/layouts/tables/data/projectsTableData";
 import store from '../../../redux/Store'
 import { useSelector } from 'react-redux'
 function Tables() {
+
+  
+
+  const [data, setData] = useState([]);
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
-  const {token,userType} = useSelector(state => state?.userProfile?.userData)
+  const {token,userType , userId} = useSelector(state => state?.userProfile?.userData)
     console.log(token+'======'+userType)
+
+
+
+    function handleDocumentView(userId) {
+      _services.list_docs(userId).then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          console.log(res.data);
+          setData(res.data);
+        }
+      });
+    }
+
+
+    useEffect(() => {
+      handleDocumentView(userId);
+      // onLoad()
+    }, []);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -55,12 +80,12 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Authors Table
+                  Documents Table
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }}
+                  table={{ columns, data }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}

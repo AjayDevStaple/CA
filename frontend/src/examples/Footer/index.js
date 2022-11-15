@@ -29,9 +29,14 @@ import typography from "assets/theme/base/typography";
 
 import GooglePayButton from "@google-pay/button-react";
 
+import {useSelector} from "react-redux";
+
 function Footer({ company, links }) {
   const { href, name } = company;
   const { size } = typography;
+  const {userType } = useSelector((state) => state?.userProfile?.userData);
+
+  console.log(typeof userType)
 
   const renderLinks = () =>
     links.map((link) => (
@@ -46,106 +51,111 @@ function Footer({ company, links }) {
 
   return (
     <>
-    <MDBox
-      width="100%"
-      display="flex"
-      flexDirection={{ xs: "column", lg: "row" }}
-      justifyContent="space-between"
-      alignItems="center"
-      px={1.5}
-    >
       <MDBox
+        width="100%"
         display="flex"
-        justifyContent="center"
+        flexDirection={{ xs: "column", lg: "row" }}
+        justifyContent="space-between"
         alignItems="center"
-        flexWrap="wrap"
-        color="text"
-        fontSize={size.sm}
         px={1.5}
       >
-        &copy; {new Date().getFullYear()}, made with
-        <MDBox fontSize={size.md} color="text" mb={-0.5} mx={0.25}>
-          <Icon color="inherit" fontSize="inherit">
-            favorite
-          </Icon>
+        <MDBox
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          flexWrap="wrap"
+          color="text"
+          fontSize={size.sm}
+          px={1.5}
+        >
+          &copy; {new Date().getFullYear()}, made with
+          <MDBox fontSize={size.md} color="text" mb={-0.5} mx={0.25}>
+            <Icon color="inherit" fontSize="inherit">
+              favorite
+            </Icon>
+          </MDBox>
+          by
+          <Link href={href} target="_blank">
+            <MDTypography variant="button" fontWeight="medium">
+              &nbsp;Staple Logic&nbsp;
+            </MDTypography>
+          </Link>
+          for a better web.
         </MDBox>
-        by
-        <Link href={href} target="_blank">
-          <MDTypography variant="button" fontWeight="medium">
-            &nbsp;Staple Logic&nbsp;
-          </MDTypography>
-        </Link>
-        for a better web.
+        <MDBox
+          component="ul"
+          sx={({ breakpoints }) => ({
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "center",
+            listStyle: "none",
+            mt: 3,
+            mb: 0,
+            p: 0,
+
+            [breakpoints.up("lg")]: {
+              mt: 0,
+            },
+          })}
+        >
+          {renderLinks()}
+        </MDBox>
       </MDBox>
-      <MDBox
-        component="ul"
-        sx={({ breakpoints }) => ({
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          justifyContent: "center",
-          listStyle: "none",
-          mt: 3,
-          mb: 0,
-          p: 0,
-
-          [breakpoints.up("lg")]: {
-            mt: 0,
-          },
-        })}
-      >
-        {renderLinks()}
-        
-      </MDBox>
-  
-    </MDBox>
-
-    <MDBox>
-          <GooglePayButton
-     environment="TEST"
-     buttonColor="default"
-     buttonType="subscribe"
-     buttonLocale="en"
-     buttonSizeMode="fill"
-     style={{width: '100%', height: 20}}
 
 
-  paymentRequest={{
-    apiVersion: 2,
-    apiVersionMinor: 0,
-    allowedPaymentMethods: [
-      {
-        type: 'CARD',
-        parameters: {
-          allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
-          allowedCardNetworks: ['MASTERCARD', 'VISA'],
-        },
-        tokenizationSpecification: {
-          type: 'PAYMENT_GATEWAY',
+
+{
+  userType === '2'  && <MDBox style={{marginTop: '560px'}}>
+  <GooglePayButton
+    environment="TEST"
+    buttonColor="default"
+    buttonType="subscribe"
+    buttonLocale="en"
+    buttonSizeMode="fill"
+    style={{ width: "100%", height: 20 }}
+    paymentRequest={{
+      apiVersion: 2,
+      apiVersionMinor: 0,
+      allowedPaymentMethods: [
+        {
+          type: "CARD",
           parameters: {
-            gateway: 'example',
-            gatewayMerchantId: 'exampleGatewayMerchantId',
+            allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+            allowedCardNetworks: ["MASTERCARD", "VISA"],
+          },
+          tokenizationSpecification: {
+            type: "stripe",
+            parameters: {
+              gateway: "v3",
+              gatewayMerchantId: "exampleGatewayMerchantId",
+            },
           },
         },
+      ],
+      merchantInfo: {
+        // merchantId: '12345678901234567890',
+        merchantName: "Demo Merchant",
       },
-    ],
-    merchantInfo: {
-      merchantId: '12345678901234567890',
-      merchantName: 'Demo Merchant',
-    },
-    transactionInfo: {
-      totalPriceStatus: 'FINAL',
-      totalPriceLabel: 'Total',
-      totalPrice: '1.00',
-      currencyCode: 'INR',
-      countryCode: 'IN',
-    },
-  }}
-  onLoadPaymentData={paymentRequest => {
-    console.log('load payment data', paymentRequest);
-  }}
-/>
-    </MDBox>
+      transactionInfo: {
+        totalPriceStatus: "FINAL",
+        totalPriceLabel: "Total",
+        totalPrice: "1.00",
+        currencyCode: "INR",
+        countryCode: "IN",
+      },
+    }}
+    onLoadPaymentData={(paymentRequest) => {
+      console.log("load payment data", paymentRequest);
+    }}
+  />
+</MDBox>
+
+
+
+
+}
+      
     </>
   );
 }

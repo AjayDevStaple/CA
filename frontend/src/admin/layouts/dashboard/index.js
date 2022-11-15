@@ -54,10 +54,6 @@ import {
 
 function AdminDashboard () {
 
-  
-
- 
-  console.log("admin dashboard");
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -85,10 +81,33 @@ function AdminDashboard () {
     password: "",
   });
 
-  
 
-  
-console.log(docListTable)
+
+
+
+
+
+
+
+
+
+
+
+
+function findUser(e) {
+
+
+
+let newTable = tableData.filter(x => x["name"].toLowerCase().includes(e))
+
+
+
+
+setTableData(newTable)
+
+}
+
+
   const [updateUserData, setUpdateUserData] = useState({ name: "", email: "" });
 
   const [modalShow, setModalShow] = useState(false);
@@ -115,8 +134,7 @@ console.log(docListTable)
 
     _services.total_doc().then((res) => {
       setDocCount(res.data)
-      console.log(res.data)
-      console.log(docCount)
+    
       
     })
   }
@@ -168,11 +186,11 @@ console.log(docListTable)
   }
 
   function create_User() {
-    console.log('createing user')
+
     setIsloading(true)
     const generatedPass = `${Math.floor(Date.now() / 1000)}`;
     setNewUserData({ ...newUserData, password: generatedPass });
-    console.log(newUserData);
+
     _services.create_User(newUserData).then((res) => {
       if (res.status == 200) {
 
@@ -204,7 +222,7 @@ console.log(docListTable)
     axios
       .post(`${url}api/admin/doc`, formData)
       .then((response) => {
-        console.log(response.status);
+     
         if (response.status === 200) {
           setdilogOpen(false);
           setIsloading(true)
@@ -224,7 +242,9 @@ console.log(docListTable)
   function handleDocumentView(id) {
     setIsloading(true)
     _services.list_docs(id).then((res) => {
-      console.log(res);
+      console.log(res.data);
+
+
       if (res.status === 200) {
         setShowDocList(true);
         setDocListTable(res.data);
@@ -250,8 +270,7 @@ console.log(docListTable)
 
     GetData();
   }
-console.log(modalShow)
-  console.log(showDocList);
+
   return  (  isLoadin === true ? <Loader /> :
   <DashboardLayout>
   <DashboardNavbar />
@@ -377,10 +396,6 @@ console.log(modalShow)
               <option value="3">Adhar Card</option>
               <option value="4">GST invoice</option>
             </Form.Select>
-
-
-
-
             <MDBTextArea placeholder='Document Description' className="mt-3" id='textAreaExample'  onChange={(e) => {
                 setDocData({ ...docData, documentDesc: e.target.value });
               }}      type="text" rows={4} />
@@ -451,11 +466,6 @@ console.log(modalShow)
             <Modal.Title>Update User Information</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-
-
-          
-
-
             <MDInput 
               type="text"
               label="Name"
@@ -501,8 +511,7 @@ console.log(modalShow)
               <th>Description</th>
               <th>Type</th>
               <th>View</th>
-              <th>Uploaded On</th>
-          
+              <th>Uploaded On</th>       
           </tr>
         </thead>
         <tbody>
@@ -519,8 +528,7 @@ console.log(modalShow)
                     </td>
                     <td className="td"> {item.updatedAt.slice(0, 10)}</td>
                     <td className="td">
-                    <DeleteOutlinedIcon onClick={() => deleteDoc(item)} />
-                                             
+                    <DeleteOutlinedIcon onClick={() => deleteDoc(item)} />                            
                     </td>
                   </tr>
                 
@@ -540,6 +548,9 @@ console.log(modalShow)
   <Grid>
     <MDBox className="mt-5">
       <h2 style={{textAlign: 'center'}}>User Table</h2>
+      <MDBox pr={1}>
+              <MDInput label="Search User" onChange= {   (e) => findUser(e.target.value)} />
+            </MDBox>
       <Table striped bordered hover size="sm">
         <thead>
           <tr>

@@ -27,19 +27,19 @@ import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
 export default function data() {
-  const Author = ({ image, name, email }) => (
+  const Author = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
+      
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
           {name}
         </MDTypography>
-        <MDTypography variant="caption">{email}</MDTypography>
+   
       </MDBox>
     </MDBox>
   );
 
-  const Job = ({ title, description }) => (
+  const Document = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
         {title}
@@ -50,17 +50,17 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "author", accessor: "author", width: "45%", align: "left" },
-      { Header: "function", accessor: "function", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
-      { Header: "employed", accessor: "employed", align: "center" },
-      { Header: "action", accessor: "action", align: "center" },
+      { Header: "documents", accessor: "author", width: "45%", align: "left" },
+      { Header: "view", accessor: "function", align: "left" },
+      { Header: "type", accessor: "status", align: "center" },
+      { Header: "date", accessor: "employed", align: "center" },
+      { Header: "download", accessor: "action", align: "center" },
     ],
 
     rows: [
       {
         author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
+        function: <Document title="Manager" description="Organization" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
@@ -79,7 +79,7 @@ export default function data() {
       },
       {
         author: <Author image={team3} name="Alexa Liras" email="alexa@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
+        function: <Document title="Programator" description="Developer" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
@@ -98,7 +98,7 @@ export default function data() {
       },
       {
         author: <Author image={team4} name="Laurent Perrier" email="laurent@creative-tim.com" />,
-        function: <Job title="Executive" description="Projects" />,
+        function: <Document title="Executive" description="Projects" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
@@ -117,7 +117,7 @@ export default function data() {
       },
       {
         author: <Author image={team3} name="Michael Levi" email="michael@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
+        function: <Document title="Programator" description="Developer" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
@@ -136,7 +136,7 @@ export default function data() {
       },
       {
         author: <Author image={team3} name="Richard Gran" email="richard@creative-tim.com" />,
-        function: <Job title="Manager" description="Executive" />,
+        function: <Document title="Manager" description="Executive" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
@@ -155,7 +155,7 @@ export default function data() {
       },
       {
         author: <Author image={team4} name="Miriam Eric" email="miriam@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
+        function: <Document title="Programator" description="Developer" />,
         status: (
           <MDBox ml={-1}>
             <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
