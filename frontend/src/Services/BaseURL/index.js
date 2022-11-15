@@ -1,2 +1,1 @@
-export const url = 'http://localhost:8080/'
-export const production = 'https://ca-c8gk.onrender.com/';
+export const url = 'http://50.116.49.118:8080/'
