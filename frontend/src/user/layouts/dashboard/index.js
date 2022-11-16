@@ -41,7 +41,7 @@ function UserDashboard() {
 
   function download(filename) {
     //starts
-    fetch("http://127.0.0.1:8081/" + filename, {
+    fetch(filename, {
       method: "GET",
     })
       .then((response) => response.blob())
@@ -104,7 +104,7 @@ function UserDashboard() {
                     <td>{EnumDocType[item.documentType]}</td>
                     <td>
                       <RemoveRedEyeIcon
-                        onClick={() => window.open(`http://127.0.0.1:8081/${item.docUrl}`)}
+                        onClick={() => window.open(`${item.docUrl}`)}
                       />
                     </td>
                     <td>{item.updatedAt.slice(0, 10)}</td>

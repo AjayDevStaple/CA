@@ -3,7 +3,7 @@ const User = require("../models/Users");
 const Doc = require("../models/Doc");
 const router = require("express").Router();
 const fs = require("fs");
-
+const path = require("path");
 //update user
 
 router.put("/updateUser/:id", async (req, res) => {
@@ -24,6 +24,7 @@ router.put("/updateUser/:id", async (req, res) => {
 
 router.get("/users", async (req, res) => {
   try {
+ 
     const users = await User.find({ userType: "2" });
     console.log(users.length);
     res.status(200).json(users);
@@ -73,10 +74,7 @@ router.post("/doc", async (req, res) => {
     const fileName = Date.now() + "" + req.files.uploadFile.name;
     const file = req.files.uploadFile;
     let uploadPath = __dirname + "/uploaded_Docs/" + fileName;
-
-    let uploadpath2send = fileName;
-
-    console.log(uploadPath);
+    console.log("this is the upload path" + uploadPath);
 
     file.mv(uploadPath, (err) => {
       if (err) {
@@ -88,8 +86,10 @@ router.post("/doc", async (req, res) => {
       userID: req.body.userID,
       documentType: req.body.documentType,
       documentDesc: req.body.documentDesc,
-      docUrl: uploadpath2send,
+      docUrl: uploadPath,
     });
+
+    console.log(uploadpath2send)
 
     const listDoc = await Doc.find({ userID: req.body.userID });
 

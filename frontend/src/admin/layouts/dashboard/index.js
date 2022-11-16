@@ -527,7 +527,7 @@ setTempData(newTable)
                     <td className="td"> {EnumDocType[item.documentType]}</td>
 
                     <td className="td">
-                    <RemoveRedEyeIcon onClick={() => window.open(`http://127.0.0.1:8081/${item.docUrl}`)}  />
+                    <RemoveRedEyeIcon onClick={() => window.open(`${item.docUrl}`)}  />
                     </td>
                     <td className="td"> {item.updatedAt.slice(0, 10)}</td>
                     <td className="td">
