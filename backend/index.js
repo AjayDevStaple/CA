@@ -10,12 +10,19 @@ const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const adminRoute = require("./routes/admin");
 const showBanner = require("node-banner");
+const path = require("path");
+
+
 
 dotenv.config();
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true }, () => {
   console.log("Database is connected");
 });
+
+
+
+
 //middlewear
 app.use(express.json());
 app.use(helmet());
@@ -42,4 +49,6 @@ app.use("/api/admin", adminRoute);
 
 app.listen(process.env.PORT, () => {
   console.log("");
+  
+console.log(__dirname)
 });
